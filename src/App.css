@@ -1,0 +1,28 @@
+.outer-canvas-container {
+  width: 750px;
+  height: 750px;
+  margin: auto;
+  display: block;
+  background: white;
+  border-radius: 8px;
+  border: 4px solid black;
+  position: relative;
+}
+
+.node {
+  background-color: white;
+  width: 36px;
+  height: 36px;
+  cursor: pointer;
+  border-radius: 50%;
+  position: absolute;
+  text-align: center;
+  line-height: 36px;
+  font-weight: bold;
+}
+
+.svg-canvas {
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
