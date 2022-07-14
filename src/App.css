@@ -1,11 +1,12 @@
 .outer-canvas-container {
   width: 750px;
   height: 750px;
+  padding: 4px;
   margin: auto;
   display: block;
   background: white;
   border-radius: 8px;
-  border: 4px solid black;
+  border: 3px solid black;
   position: relative;
 }
 
@@ -25,4 +26,139 @@
   width: 100%;
   height: 100%;
   cursor: pointer;
+}
+
+.mode-select {
+  margin: auto;
+  display: block;
+  text-align: center;
+  margin-top: 16px;
+  margin-bottom: 16px;
+}
+
+.mode-select select {
+  padding: 4px 8px;
+  border: 1px solid black;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 600;
+}
+
+.mode-select span {
+  padding: 4px 8px;
+  font-size: 18px;
+  line-height: 24px;
+  display: inline-block;
+  margin-right: 8px;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.start-node circle {
+  stroke: green;
+}
+
+.start-node text {
+  stroke: green;
+}
+
+.end-node text {
+  stroke: blue;
+}
+
+.end-node circle {
+  stroke: blue;
+}
+
+.buttons-container {
+  margin: auto;
+  margin-top: 16px;
+  text-align: center;
+}
+
+.function-button {
+  font-size: 14px;
+  line-height: 19px;
+  padding: 2px 16px;
+  background-color: white;
+  border-radius: 4px;
+  border: 2px solid black;
+  cursor: pointer;
+  color: black;
+}
+
+.function-button:hover {
+  background-color: black;
+  color: white;
+}
+
+.function-button:first-of-type {
+  margin-right: 16px;
+}
+
+.starting-node-text {
+  color: green;
+  font-size: 14px;
+  font-weight: bold;
+  margin-right: 16px;
+  margin-bottom: 4px;
+  display: inline-block;
+}
+
+.ending-node-text {
+  color: blue;
+  line-height: 19px;
+  font-weight: bold;
+  margin-bottom: 4px;
+  display: inline-block;
+}
+
+.modal-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,.4);
+  z-index: 5;
+}
+
+.modal-background-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: transparent;
+  z-index: 6;
+}
+
+.modal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+  background-color: white;
+  border-radius: 8px;
+  z-index: 10;
+  padding: 16px 32px;
+  font-size: 16px;
+  line-height: 22px;
+  text-align: center;
+  box-shadow: 2px 2px 5px rgba(0,0,0,.1);
+}
+
+.modal span {
+  display: block;
+  margin-bottom: 16px;
+}
+
+.modal button {
+  min-width: 130px;
+  margin: 0!important;
+  text-align: center;
 }

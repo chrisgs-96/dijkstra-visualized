@@ -11,6 +11,19 @@ function Lines(props) {
         }
     }
 
+    const findMin = (num1,num2) => {
+        if(num1 < num2) {
+            return num1;
+        }
+        return num2;
+    }
+
+    const findMax = (num1,num2) => {
+        if(num1 < num2) {
+            return num2;
+        }
+        return num1;
+    }
     // in some cases we will have to place the text more to the left/right/up/down
     // so this function calculates this offset by seeing the line's [x1,y1,x2,y2]
     const calculateTextPosition = (x1, x2, y1, y2) => {
@@ -24,7 +37,7 @@ function Lines(props) {
         <>
             {vertexes.map((vertex, i) => {
                 const position = calculateTextPosition(vertex.startLeft, vertex.endLeft, vertex.startTop, vertex.endTop);
-                return <g key={i} onClick={() => handleClick(vertex.id)}>
+                return <g className="cursor-pointer" key={i} onClick={() => handleClick(vertex.id)}>
                     <line
                         x1={vertex.startLeft - 18}
                         y1={vertex.startTop - 18}
