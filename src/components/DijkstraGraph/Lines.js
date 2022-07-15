@@ -4,25 +4,11 @@ function Lines(props) {
     const { vertexes, removeVertex, changeWeight, mode } = props;
 
     const handleClick = id => {
-        if (mode === 2) {
+        if (mode === 4) {
             removeVertex(id)
         } else {
             changeWeight(id);
         }
-    }
-
-    const findMin = (num1,num2) => {
-        if(num1 < num2) {
-            return num1;
-        }
-        return num2;
-    }
-
-    const findMax = (num1,num2) => {
-        if(num1 < num2) {
-            return num2;
-        }
-        return num1;
     }
     // in some cases we will have to place the text more to the left/right/up/down
     // so this function calculates this offset by seeing the line's [x1,y1,x2,y2]
