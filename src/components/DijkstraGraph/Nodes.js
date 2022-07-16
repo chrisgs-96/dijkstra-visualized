@@ -34,13 +34,13 @@ function Nodes(props) {
     return (
         <>
             {nodes.map((node, i) => {
-                const isHighlighed = selectedNode === node.id;
+                const isHighlighted = selectedNode === node.id;
                 return <g
                     key={i}
                     className={"cursor-pointer" + (startingNode === node.id ? ' start-node' : '') + (finalNode === node.id ? ' end-node' : '')}
                     onClick={e => handleNodeClick(node.id)} id={'node-' + node.id}
                 >
-                    <circle cx={node.left} cy={node.top} r="18" stroke={isHighlighed ? "red" : "black"} strokeWidth="3" fill={node.isVisited ? "rgb(220,220,220)" : "white"} />
+                    <circle cx={node.left} cy={node.top} r="18" stroke={isHighlighted ? "red" : "black"} strokeWidth="3" fill={node.isVisited ? "rgb(220,220,220)" : "white"} />
                     <text x={node.left} y={node.top + 2}
                         textAnchor="middle"
                         stroke="red"

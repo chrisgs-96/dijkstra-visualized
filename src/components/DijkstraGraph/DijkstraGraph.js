@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Nodes from './Nodes';
+import NodesTable from './NodesTable';
 import Menu from './Menu';
 import Lines from './Lines';
 
@@ -10,7 +11,7 @@ function DijkstraGraph(props) {
     const [finalNode, setFinalNode] = useState(-1);
     const [isRunningDijkstra, setIsRunningDijkstra] = useState(false);
     const [timeBetweenSteps, setTimeBetweenSteps] = useState(0);
-    const [logs, setLogs] = useState([]);
+
 
     useEffect(() => { setSelectedNode(false) }, [mode]);
 
@@ -270,7 +271,6 @@ function DijkstraGraph(props) {
 
     const proceed = () => {
         setTimeout(() => {
-            console.log('proceeeed')
             let nextNodeId = returnNextNode();
             if (nextNodeId === -1) {
                 return
@@ -282,8 +282,8 @@ function DijkstraGraph(props) {
     }
 
     const startSolvingDijkstra = () => {
-        examineNode(startingNode);
-        proceed();
+            examineNode(startingNode);
+            proceed();
     }
 
     return (
@@ -297,22 +297,25 @@ function DijkstraGraph(props) {
                 mode={mode}
                 setMode={setMode}
             />
-            <svg id="canvas" className="outer-canvas-container" onClick={e => createNode(e.clientX, e.clientY)}>
-                <Lines mode={mode} vertexes={vertexes} changeWeight={changeWeight} removeVertex={removeVertex} />
-                <Nodes
-                    setModalText={setModalText}
-                    isRunningDijkstra={isRunningDijkstra}
-                    startingNode={startingNode}
-                    setStartingNode={setStartingNode}
-                    finalNode={finalNode}
-                    setFinalNode={setFinalNode}
-                    selectedNode={selectedNode}
-                    connectNode={connectNode}
-                    removeNode={removeNode}
-                    nodes={nodes}
-                    mode={mode}
-                />
-            </svg>
+            <div className="canvas-and-logs">
+                {isRunningDijkstra && <NodesTable nodes={nodes} />}
+                <svg id="canvas" className="outer-canvas-container" onClick={e => createNode(e.clientX, e.clientY)}>
+                    <Lines mode={mode} vertexes={vertexes} changeWeight={changeWeight} removeVertex={removeVertex} />
+                    <Nodes
+                        setModalText={setModalText}
+                        isRunningDijkstra={isRunningDijkstra}
+                        startingNode={startingNode}
+                        setStartingNode={setStartingNode}
+                        finalNode={finalNode}
+                        setFinalNode={setFinalNode}
+                        selectedNode={selectedNode}
+                        connectNode={connectNode}
+                        removeNode={removeNode}
+                        nodes={nodes}
+                        mode={mode}
+                    />
+                </svg>
+            </div>
             <div className="buttons-container">
                 {!isRunningDijkstra && <button className="function-button" onClick={startDijkstra}>Start Dijkstra</button>}
                 {isRunningDijkstra && <button className="function-button" onClick={stopDijkstra}>Stop Dijkstra</button>}
