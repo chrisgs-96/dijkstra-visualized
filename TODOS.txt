@@ -1,4 +1,7 @@
-1) Να μην πεφτουν τα γραμματα πανω στις γραμμες
-2) Να δω τι γινεται στην περιπτωση που το βαρος ειναι πανω στον κομβο
-6) Το σοβαρο κομματι του προγραμματος
-8) popups
+1) Bugchecking
+2) Visual checking
+3) Responsive
+4) Na tsekarw pws vrisketai to monopati
+5) na ftiaksw to thema me ta noumera p peftoun panw stis akmes
+6) na valw grammata sta onomata twn nodes 
+7) Na emfanizei ta varh san inf kai oxi san 999999
