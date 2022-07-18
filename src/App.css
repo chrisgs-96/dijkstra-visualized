@@ -1,3 +1,4 @@
+
 .outer-canvas-container {
   width: 750px;
   height: 750px;
@@ -34,6 +35,10 @@
   text-align: center;
   margin-top: 16px;
   margin-bottom: 16px;
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  gap: 8px;
 }
 
 .mode-select select {
@@ -179,10 +184,11 @@
 }
 
 .canvas-and-logs {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  padding: 0px 32px;
+  display: grid;
+  grid-template-columns: 760px max-content;
+  padding: 0px 16px;
+  gap: 16px;
+  justify-content: center;
 }
 
 .logs-container {
@@ -209,7 +215,7 @@
 
 .algorithm-info-grid {
   display: grid;
-  grid-template-columns: 96px 64px 96px 64px 120px max-content ;
+  grid-template-columns: 96px 64px 96px 64px 120px max-content;
   align-items: center;
   text-align: center;
   border-radius: 4px;
@@ -220,4 +226,36 @@
 .algorithm-info-grid div {
   border: 1px solid black;
   padding: 2px 4px;
+}
+
+.explanation {
+  display: block;
+  max-width: 550px;
+  margin-top: 16px;
+  text-align: left;
+}
+
+.algorithm-info-grid-span {
+  display: block;
+  margin-bottom: 4px;
+  margin-top: 16px;
+}
+
+@media screen and (max-width: 1380px) {
+  body .canvas-and-logs {
+    display: flex;
+    justify-content: center;
+    gap: 0;
+    flex-direction: column;
+  }
+  body  .node-info-grid {
+    margin: auto;
+  }
+}
+
+@media screen and (max-width: 800px) {
+  body .outer-canvas-container {
+    width: calc(100% - 32px);
+    height: calc(95vh - 64px);
+  }
 }

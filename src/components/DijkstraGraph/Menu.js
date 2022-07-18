@@ -6,6 +6,8 @@ function Menu(props) {
         isRunningDijkstra,
         startingNode,
         // finalNode,
+        convertIdToLetter,
+        clearCanvas,
         mode,
         setMode,
     } = props;
@@ -20,9 +22,11 @@ function Menu(props) {
                     <option value={3}>Set Vertex Weight</option>
                     <option value={4}>Remove Node</option>
                 </select>
+                {<button className="function-button" onClick={clearCanvas}>Clear diagram</button>}
             </div>}
+
             {isRunningDijkstra && <div style={{ margin: 'auto', textAlign: 'center' }}>
-                <span className="starting-node-text">Starting Node: {startingNode}</span>
+                <span className="starting-node-text">Starting Node: {convertIdToLetter(startingNode)}</span>
                 {/* <span className="ending-node-text">Ending Node: {finalNode}</span> */}
             </div>}
         </>

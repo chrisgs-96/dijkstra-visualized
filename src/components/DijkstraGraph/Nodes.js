@@ -11,11 +11,17 @@ function Nodes(props) {
         // setFinalNode,
         removeNode,
         connectNode,
+        convertIdToLetter,
         selectedNode,
+        hasFinished,
+        findOriginNode,
         setModalText,
     } = props;
 
     const handleNodeClick = (id) => {
+        if (isRunningDijkstra && hasFinished) {
+            setModalText('The path for node ' + convertIdToLetter(id) + ' is: \n' + findOriginNode(startingNode, id));
+        }
         if (!isRunningDijkstra) {
             if (mode === 2) connectNode(id);
             if (mode === 4) removeNode(id);
@@ -41,6 +47,7 @@ function Nodes(props) {
                     // className={"cursor-pointer" + (startingNode === node.id ? ' start-node' : '') + (finalNode === node.id ? ' end-node' : '')}
                     className={"cursor-pointer"}
                     onClick={e => handleNodeClick(node.id)} id={'node-' + node.id}
+                    onContextMenu={e => { if (!isRunningDijkstra) { e.preventDefault(); removeNode(node.id) } }}
                 >
                     <circle cx={node.left} cy={node.top} r="18" stroke={isHighlighted ? "red" : "black"} strokeWidth="3" fill={node.isVisited ? "rgb(220,220,220)" : "white"} />
                     <text x={node.left} y={node.top + 2}
@@ -49,7 +56,7 @@ function Nodes(props) {
                         strokeWidth="1px"
                         alignmentBaseline="middle"
                     >
-                        {node.id}
+                        {convertIdToLetter(node.id)}
                     </text>
                     {isRunningDijkstra && <text x={node.left + 20} y={node.top - 22}
                         textAnchor="middle"

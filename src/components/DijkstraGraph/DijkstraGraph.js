@@ -18,10 +18,28 @@ function DijkstraGraph(props) {
     const [vertexToExamine, setVertexToExamine] = useState(false);
     const [vertexesToExamine, setVertexesToExamine] = useState([]);
     const [explanation, setExplanation] = useState('');
-
+    const [hasFinished, setHasFinished] = useState(false);
     useEffect(() => { setSelectedNode(false) }, [mode]);
 
+    //formats the weight
+    const fw = (weight) => {
+        return weight >= 99999999 ? '∞' : weight;
+    }
+
+    const convertIdToLetter = (id) => {
+        const alphabet = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
+        let num = id;
+        if (num <= 25) {
+            return alphabet[num];
+        } else {
+            return alphabet[num % 25] + ('' + num % 25);
+        }
+    }
+
     const createNode = (x, y) => {
+        if (isRunningDijkstra) {
+            return;
+        }
         if (mode !== 1 || isRunningDijkstra) return;
         let canv = document.getElementById('canvas');
         let canvCoordinates = canv.getBoundingClientRect();
@@ -35,6 +53,32 @@ function DijkstraGraph(props) {
             isVisited: false,
             visitedFromNode: false,
         }]);
+    }
+
+    const findOriginNode = (startingNode, nodeId) => {
+        let _nodes = [];
+        _nodes.push(nodeId)
+        let currentNode = nodeId;
+        let hasFoundSomething = false;
+        while (currentNode !== startingNode) {
+            hasFoundSomething = false;
+            for (let i = 0; i < nodes.length; i += 1) {
+                if (nodes[i].id === currentNode) {
+                    hasFoundSomething = true;
+                    _nodes.push(nodes[i].visitedFromNode);
+                    currentNode = nodes[i].visitedFromNode;
+                }
+            }
+            if(!hasFoundSomething) {
+                break;
+            }
+        }
+        _nodes.reverse();
+        let str = ''
+        for (let i = 0; i < _nodes.length; i += 1) {
+            str += (i !== 0 ? ' -> ' : '' ) + convertIdToLetter(_nodes[i]);
+        }
+        return str;
     }
 
     const resetNodesWeights = () => {
@@ -82,6 +126,10 @@ function DijkstraGraph(props) {
                     }
                 }
                 let weight = prompt("Please enter the new weight", 1);
+                if (weight === null) {
+                    setSelectedNode(false);
+                    return;
+                }
                 weight = parseInt(weight, 10);
                 if (typeof (weight) === 'number' && weight >= 0) {
                     setVertexes([...vertexes, {
@@ -148,6 +196,9 @@ function DijkstraGraph(props) {
     const changeWeight = (id) => {
         let arr = [...vertexes];
         let newWeight = prompt("Please enter the new weight", 1);
+        if (newWeight === null) {
+            return;
+        }
         newWeight = parseInt(newWeight, 10);
         if (typeof (newWeight) === 'number' && newWeight >= 0) {
 
@@ -209,6 +260,7 @@ function DijkstraGraph(props) {
         setExplanation('');
         setSelectedNode(false);
         setSelectedNode2(false);
+        setHasFinished(false);
     }
 
     React.useEffect(() => {
@@ -303,6 +355,8 @@ function DijkstraGraph(props) {
     const proceed = () => {
         let nextNodeId = returnNextNode();
         if (nextNodeId === -1) {
+            setModalText('Dijkstra has finished executing. Press on a node so that you can see the min path for it.');
+            setHasFinished(true);
             return
         } else {
             examineNode(nextNodeId);
@@ -345,7 +399,8 @@ function DijkstraGraph(props) {
             setSelectedNode(nextNodeId);
             if (nextNodeId === -1) {
                 // we have searched all of the nodes and there is no node left
-                setModalText('Dijkstra has finished executing.');
+                setModalText('Dijkstra has finished executing. Press on a node so that you can see the min path for it.');
+                setHasFinished(true);
                 setExplanation('Since all nodes are examined (visited) we have finished executing the algorithm.')
                 setSelectedNode(false);
                 return;
@@ -362,7 +417,7 @@ function DijkstraGraph(props) {
                 setVertexesToExamine(arr);
                 setVertexToExamine(arr[0].vertex);
                 setSelectedNode2(false);
-                setExplanation('Since we have finished examining all the vertexes connected to the previous node, we mark it as visited and we start examining node #' + nextNodeId
+                setExplanation('Since we have finished examining all the vertexes connected to the previous node, we mark it as visited and we start examining node #' + convertIdToLetter(nextNodeId)
                     + ' because this node is unvisited and has the lowest weight out of all the remaining nodes.');
             }
         } else {
@@ -370,18 +425,18 @@ function DijkstraGraph(props) {
                 vertexesToExamine[vertexToExamineIndex].vertex.endId :
                 vertexesToExamine[vertexToExamineIndex].vertex.startId;
             setSelectedNode2(otherEnd);
-            let expl = 'Examining the vertex that connects node ' + nodeToExamine + ' with ' + otherEnd + '. The node #' + nodeToExamine + ' has a weight of '
-                + returnNodeWeight(nodeToExamine) + ' and the vertex that connects thse two has a weight of ' + vertexesToExamine[vertexToExamineIndex].vertex.weight
-                + '. Node #' + otherEnd + ' has a weight of ' + returnNodeWeight(otherEnd) + '.';
+            let expl = 'Examining the vertex that connects node ' + convertIdToLetter(nodeToExamine) + ' with ' + convertIdToLetter(otherEnd) + '. The node #' + convertIdToLetter(nodeToExamine) + ' has a weight of '
+                + fw(returnNodeWeight(nodeToExamine)) + ' and the vertex that connects thse two has a weight of ' + vertexesToExamine[vertexToExamineIndex].vertex.weight
+                + '. Node #' + convertIdToLetter(otherEnd) + ' has a weight of ' + fw(returnNodeWeight(otherEnd)) + '.';
             if (vertexesToExamine[vertexToExamineIndex].vertex.weight + returnNodeWeight(nodeToExamine) < returnNodeWeight(otherEnd)) {
-                expl += ' In this case, since the weights of node #' + nodeToExamine + ' + the weight of the vertex that we\'re examining are smaller than the weight of node #'
-                    + otherEnd + ', the weight of node #' + otherEnd + ' will change to the sum of node#' + nodeToExamine + ' + the vertex\'s weight';
+                expl += ' In this case, since the weights of node #' + convertIdToLetter(nodeToExamine) + ' + the weight of the vertex that we\'re examining are smaller than the weight of node #'
+                    + convertIdToLetter(otherEnd) + ', the weight of node #' + convertIdToLetter(otherEnd) + ' will change to the sum of node#' + convertIdToLetter(nodeToExamine) + ' + the vertex\'s weight';
             } else {
-                expl += ' In this case, since node #' + nodeToExamine + ' + the weight of the vertex are bigger than the weight of node #' + otherEnd + ' we won\'t change the weight of node #' + otherEnd;
+                expl += ' In this case, since node #' + convertIdToLetter(nodeToExamine) + ' + the weight of the vertex are bigger than the weight of node #' + convertIdToLetter(otherEnd) + ' we won\'t change the weight of node #' + convertIdToLetter(otherEnd);
             }
             expl += '. When we are done with changing/not changing the node\'s weight, we mark this vertex as examined and move on to the next vertex/node';
             setExplanation(expl);
-            updateNodeWeight(otherEnd, vertexesToExamine[vertexToExamineIndex].vertex.weight + returnNodeWeight(nodeToExamine), nodeToExamine);
+            updateNodeWeight(otherEnd, vertexesToExamine[vertexToExamineIndex].vertex.weight + fw(returnNodeWeight(nodeToExamine)), nodeToExamine);
             vertexesToExamine[vertexToExamineIndex].isExamined = true;
         }
     };
@@ -391,29 +446,21 @@ function DijkstraGraph(props) {
             <Menu
                 isRunningDijkstra={isRunningDijkstra}
                 startingNode={startingNode}
+                clearCanvas={() => { stopDijkstra(); setNodes([]); setVertexes([]) }}
+                convertIdToLetter={convertIdToLetter}
                 // finalNode={finalNode}
                 mode={mode}
                 setMode={setMode}
             />
             <div className="canvas-and-logs">
-                <div>
-                    {isRunningDijkstra && <NodesTable nodes={nodes} />}
-                    {(isRunningDijkstra && manualMode) &&
-                        <AlgorithmInfoTable
-                            explanation={explanation}
-                            setExplanation={setExplanation}
-                            vertexes={vertexesToExamine}
-                            vertexToExamine={vertexToExamine}
-                            nodes={nodes}
-                            nodeToExamine={nodeToExamine}
-                        />}
-                </div>
                 <svg id="canvas" className="outer-canvas-container" onClick={e => createNode(e.clientX, e.clientY)}>
-                    <Lines mode={mode} vertexes={vertexes} changeWeight={changeWeight} removeVertex={removeVertex} />
+                    <Lines isRunningDijkstra={isRunningDijkstra} mode={mode} vertexes={vertexes} changeWeight={changeWeight} removeVertex={removeVertex} />
                     <Nodes
                         setModalText={setModalText}
                         isRunningDijkstra={isRunningDijkstra}
+                        convertIdToLetter={convertIdToLetter}
                         startingNode={startingNode}
+                        hasFinished={hasFinished}
                         setStartingNode={setStartingNode}
                         // finalNode={finalNode}
                         // setFinalNode={setFinalNode}
@@ -423,16 +470,29 @@ function DijkstraGraph(props) {
                         removeNode={removeNode}
                         nodes={nodes}
                         mode={mode}
+                        findOriginNode={findOriginNode}
                     />
                 </svg>
+                <div>
+                    {isRunningDijkstra && <NodesTable convertIdToLetter={convertIdToLetter} nodes={nodes} />}
+                    {(isRunningDijkstra && manualMode) &&
+                        <AlgorithmInfoTable
+                            explanation={explanation}
+                            setExplanation={setExplanation}
+                            vertexes={vertexesToExamine}
+                            convertIdToLetter={convertIdToLetter}
+                            vertexToExamine={vertexToExamine}
+                            nodes={nodes}
+                            nodeToExamine={nodeToExamine}
+                        />}
+                </div>
             </div>
+            <div onClick={e => console.log(e.detail)}>dsajhdasjldsaj</div>
             <div className="buttons-container">
                 {!isRunningDijkstra && <button className="function-button" onClick={() => startDijkstra()}>Start Dijkstra</button>}
                 {!isRunningDijkstra && <button className="function-button" onClick={() => startDijkstra(true)}>Start Dijkstra (Step By Step)</button>}
-                {isRunningDijkstra && manualMode && <button className="function-button" onClick={() => proceedManually()}>Next Step</button>}
+                {isRunningDijkstra && !hasFinished && manualMode && <button className="function-button" onClick={() => proceedManually()}>Next Step</button>}
                 {isRunningDijkstra && <button className="function-button" onClick={stopDijkstra}>Stop Dijkstra</button>}
-                <button onClick={() => console.log(JSON.stringify(vertexes))}>print vertex</button>
-                <button onClick={() => console.log(JSON.stringify(nodes))}>print node</button>
             </div>
         </>
     );

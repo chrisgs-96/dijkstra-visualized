@@ -1,14 +1,15 @@
 
 
 function Lines(props) {
-    const { vertexes, removeVertex, changeWeight, mode } = props;
+    const { vertexes, isRunningDijkstra, removeVertex, changeWeight, mode } = props;
 
     const handleClick = id => {
-        if (mode === 4) {
-            removeVertex(id)
-        } else {
-            changeWeight(id);
-        }
+        if (!isRunningDijkstra)
+            if (mode === 4) {
+                removeVertex(id)
+            } else {
+                changeWeight(id);
+            }
     }
     // in some cases we will have to place the text more to the left/right/up/down
     // so this function calculates this offset by seeing the line's [x1,y1,x2,y2]
@@ -23,7 +24,13 @@ function Lines(props) {
         <>
             {vertexes.map((vertex, i) => {
                 const position = calculateTextPosition(vertex.startLeft, vertex.endLeft, vertex.startTop, vertex.endTop);
-                return <g className="cursor-pointer" key={i} onClick={() => handleClick(vertex.id)}>
+                return <g
+                    className="cursor-pointer"
+                    key={i}
+                    onClick={() => handleClick(vertex.id)}
+                    onContextMenu={e => { if (!isRunningDijkstra) { e.preventDefault(); removeVertex(vertex.id) } }}
+
+                >
                     <line
                         x1={vertex.startLeft - 18}
                         y1={vertex.startTop - 18}
